@@ -2,10 +2,17 @@ import { createRouter, createWebHashHistory } from "vue-router";
 // import Home from "../views/Home.vue";
 
 const routes = [
+  //登录
   {
     path: "/",
     name: "Login",
-    component: () => import("../views/acount/Login.vue")
+    component: () => import("../views/account/Login.vue")
+  },
+  //注册
+  {
+    path: "/register",
+    name: "Register",
+    component: () => import("../views/account/Register.vue")
   },
   {
     path: "/about",
@@ -16,7 +23,7 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
-    {
+  {
     path: "/ceshi",
     name: "Ceshi",
     // route level code-splitting
