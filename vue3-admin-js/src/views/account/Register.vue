@@ -14,21 +14,18 @@
         </a-form-item>
         <a-form-item name="password">
           <label>密码</label>
-          <a-input v-model:value="account_form.password" type="password" autocomplete="off"/>
+          <a-input v-model:value="account_form.password" type="text" autocomplete="off"/>
         </a-form-item>
-
-        <a-form-item>
+        <a-form-item name="passwords">
           <label>确认密码</label>
-          <a-input v-model="account_form.passwords" type="password" autocomplete="off"/>
+          <a-input v-model:value="account_form.passwords" type="text" autocomplete="off"/>
         </a-form-item>
 
-        <a-form-item>
-
+        <a-form-item name="code">
           <label>验证码</label>
-
           <a-row gutter="12">
-            <a-col :span="16">
-              <a-input v-model="account_form.code" type="password" autocomplete="off"/>
+            <a-col :span="15">
+              <a-input v-model:value="account_form.code" type="text" autocomplete="off"/>
             </a-col>
             <a-col :span="8">
               <a-button html-type="submit" type="primary" block>
@@ -46,10 +43,11 @@
 
 <script>
 import {reactive, toRefs} from "vue";
-import {checkPhone} from "@/utils/verification"
+import {checkPhone,checkPassword as password,checkCode} from "@/utils/verification"
 export default {
   name: "Login",
   setup(props) {
+    // 校验用户名
     const checkUsername = async (rule, value, callback) => {
       console.log(111,value)
 
@@ -62,6 +60,32 @@ export default {
         return Promise.resolve()
       }
 
+    };
+
+    // 校验密码
+    const checkPassword = async (rule, value, callback) => {
+      console.log(222,value)
+      var pass2 = formConfig.account_form.passwords
+      if (!value) {
+        return Promise.reject('请输入用户密码');
+      }else if(!password(value)){
+        return Promise.reject('请输入6-20数字和字母')
+      }else if(pass2 && value &&(pass2 != value)){
+        return Promise.reject('请确保两次密码一致')
+      }else{
+        return Promise.resolve()
+      }
+    };
+  // 校验验证码
+    const checkcode = async (rule, value, callback) => {
+      console.log(333,value)
+      if (!value) {
+        return Promise.reject('请输入验证码');
+      }else if(!checkCode(value)){
+        return Promise.reject('请输入6位的数字和字母')
+      }else{
+        return Promise.resolve()
+      }
     };
 
     // 可以用reactive 定义对象类型的数据
@@ -77,17 +101,19 @@ export default {
         code: ''
       },
       rules_form: {
-        username: [
-          {validator: checkUsername, trigger: 'blur'}
-        ],
-      }
+        username: [{validator: checkUsername, trigger: 'blur'}],
+        password:[{validator: checkPassword, trigger: 'blur'}],
+        passwords:[{validator: checkPassword, trigger: 'blur'}],
+        code:[{validator: checkcode, trigger: 'blur'}]
 
+      }
     })
     const data = toRefs(formConfig);
 
     // 提交表单
-    const handleFinish = () => {
-      alert(123)
+    const handleFinish = (value) => {
+      alert(123,value)
+      console.log(value)
     }
 
     return {
