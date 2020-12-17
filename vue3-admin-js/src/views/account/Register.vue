@@ -24,15 +24,21 @@
         <a-form-item name="code">
           <label>验证码</label>
           <a-row gutter="12">
-            <a-col :span="15">
+            <a-col :span="14">
               <a-input v-model:value="account_form.code" type="text" autocomplete="off"/>
             </a-col>
-            <a-col :span="8">
-              <a-button html-type="submit" type="primary" block>
-                注册
+            <a-col :span="10">
+              <a-button  type="primary" @click="getCode" :disabled="code_button_disabled" block>
+                {{ button_text }}
               </a-button>
             </a-col>
           </a-row>
+        </a-form-item>
+        <a-form-item name ='register'>
+           <a-button html-type="submit" type="primary" block>
+               注册
+              </a-button>
+
         </a-form-item>
 
       </a-form>
@@ -76,7 +82,7 @@ export default {
         return Promise.resolve()
       }
     };
-  // 校验验证码
+    // 校验验证码
     const checkcode = async (rule, value, callback) => {
       console.log(333,value)
       if (!value) {
@@ -105,20 +111,43 @@ export default {
         password:[{validator: checkPassword, trigger: 'blur'}],
         passwords:[{validator: checkPassword, trigger: 'blur'}],
         code:[{validator: checkcode, trigger: 'blur'}]
-
       }
     })
-    const data = toRefs(formConfig);
-
+    const buttonConfig =reactive({
+      button_text:'获取验证码',
+      time_range:6,
+      code_button_disabled:false
+    })
+    const form_data = toRefs(formConfig);
+    const form_button =toRefs(buttonConfig)
     // 提交表单
     const handleFinish = (value) => {
       alert(123,value)
       console.log(value)
     }
+    const getCode = ()=>{
+      if (!(formConfig.account_form.username&&formConfig.account_form.password&&formConfig.account_form.passwords)){
+        alert('请先输入用户名和密码')
+        return
+      }
+      if(buttonConfig.dataIte){clearInterval(buttonConfig.dataItem)}
+      buttonConfig.dataItem = setInterval(()=>{
+        buttonConfig.time_range--;
+        console.log(buttonConfig.time_range);
+        buttonConfig.button_text =buttonConfig.time_range+'秒'
+        if (buttonConfig.time_range<=0){
+          buttonConfig.button_text = '重新获取'
+          clearInterval(buttonConfig.dataItem)
+        }
+      },1000)
+
+    }
 
     return {
-      ...data,
+      ...form_data,
+      ...form_button,
       handleFinish,
+      getCode
 
     }
 
