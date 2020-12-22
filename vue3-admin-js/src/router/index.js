@@ -20,6 +20,22 @@ const routes = [
     name: "Forget",
     component: () => import("../views/account/Forget.vue")
   },
+      //home 首页
+  {
+    path: "/index",
+    name: "Index",
+    component: () => import("../views/layout/Index.vue")
+  },
+        //newsIndex 信息管理页
+  {
+    path: "/newsIndex",
+    name: "NewsIndex",
+    component: () => import("../views/layout/Index.vue")
+  },
+
+
+
+
   {
     path: "/about",
     name: "About",
