@@ -12,14 +12,17 @@
             </a-menu-item>
             <a-menu-divider/>
             <a-menu-item key="1">
-             <div class="menu-item">
-               <span>中文</span>
-               <span>英文</span>
+             <div class="menu-item menu-lang">
+               <span v-for="item in data.lang" :key="item.value"
+                     @click="toggleLang(item.value)"
+                     :class="{'current':data.lang_current==item.value}"
+               >{{item.label}}</span>
+
              </div>
             </a-menu-item>
             <a-menu-divider/>
-            <a-menu-item key="3" disabled>
-              <div class="menu-item">{{$t("header_menu.logout") }}</div>
+            <a-menu-item key="3" >
+              <div class="menu-item">{{ $t("header_menu.logout") }}</div>
             </a-menu-item>
           </a-menu>
         </template>
@@ -29,8 +32,28 @@
 </template>
 
 <script>
+import {reactive} from 'vue'
+import {useI18n} from "vue-i18n";
 export default {
-  name: "Header"
+  name: "Header",
+  setup(){
+    const {locale} = useI18n({useScope:'global'});
+    const data = reactive({
+      lang:[
+        {label:"中文",value:"ch"},
+        {label:"En",value:"en"}
+      ],
+      lang_current:'ch'
+    });
+    const toggleLang = (lang) =>{
+      locale.value = lang;
+      data.lang_current = lang;
+    }
+    return {
+      data,
+      toggleLang
+    }
+  }
 }
 </script>
 
@@ -38,10 +61,23 @@ export default {
 #header {
   padding: 0 20px;
   height: 64px;
-  .menu-item{
+}
+.menu-item {
     padding: 5px 10px;
     font-size: 14px;
-    font-family: SimSun;
+    font-family: "黑体";
+    color: #46a6ff;
+}
+.header-menu{
+  float:right;
+}
+.menu-lang {
+  color: #aeaeae;
+  span{
+    margin-right: 10px;}
+  .current{
+    color: #000000;
+
   }
 }
 </style>
